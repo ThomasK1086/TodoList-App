@@ -1,0 +1,43 @@
+#:set GROUPBOX_COLOR_BG (0.141, 0.157, 0.18, 0.91)
+#:set GROUPBOX_ROUNDING_RADIUS [10, 10, 10, 10]
+
+#:set GROUPBOX_SPACING 10
+#:set GROUPBOX_PADDING 15
+
+<GroupBox>:
+    task_container: internal_box
+
+    orientation: 'vertical'
+    size_hint: (0.99, None)
+    height: self.minimum_height
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+    spacing: GROUPBOX_SPACING
+    padding: GROUPBOX_PADDING
+
+    canvas.before:
+        Color:
+            rgba: GROUPBOX_COLOR_BG
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: GROUPBOX_ROUNDING_RADIUS
+    Label:
+        id: title_label
+        text: "----==| " + root.group_name + " |==----"
+        font_size: FONT_TITLE_SIZE
+        bold: False
+        size_hint_y: None
+        height: 10
+        halign: 'center'
+        valign: 'top'
+        text_size: self.width, None
+
+    # This is the target container for your dynamic widgets
+    BoxLayout:
+        id: internal_box
+        orientation: 'vertical'
+        spacing: GROUPBOX_SPACING
+        padding: [0, 0, 0, 0]
+        size_hint_y: None
+        height: self.minimum_height

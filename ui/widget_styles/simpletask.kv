@@ -1,0 +1,104 @@
+#:import colors ui.theme
+
+#:set TEXT_COLOR (1, 1, 1, 1)
+#:set ROW_HEIGHT 40
+#:set HOVER_COLOR (0.4, 0.4, 0.4, 1)
+#:set PADDING_X 5
+
+# --- SPECIFIC CONTENT FOR SIMPLE TASK DETAILS BODY ---
+<SimpleTaskBody>:
+    do_scroll_x: False
+    do_scroll_y: True
+    # Smooth scrolling on desktop
+    scroll_type: ['bars', 'content']
+    bar_width: dp(8)
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_y: None
+        height: self.minimum_height
+        padding: dp(10)
+        spacing: dp(10)
+
+        Label:
+            text: "Created on: " + (root.creation_date if root.creation_date else "N/A")
+            size_hint_y: None
+            height: 30
+            halign: 'left'
+            text_size: self.width, None
+            color: 0.6, 0.6, 0.6, 1
+
+        Label:
+            text: "Description"
+            bold: True
+            size_hint_y: None
+            height: 30
+            halign: 'left'
+            text_size: self.width, None
+
+        Label:
+            text: root.description if root.description else "No description provided."
+            size_hint_y: None
+            height: self.texture_size[1]
+            halign: 'left'
+            valign: 'top'
+            text_size: self.width, None
+            color: 0.8, 0.8, 0.8, 1
+
+        BoxLayout:
+            size_hint_y: None
+            height: 40
+            spacing: 10
+            Label:
+                text: "Status: " + ("Completed" if root.is_completed else "Pending")
+                halign: 'left'
+                text_size: self.width, None
+                color: (0.3, 0.8, 0.3, 1) if root.is_completed else (0.8, 0.3, 0.3, 1)
+
+
+<SimpleTaskListItem>
+# Properties for easy access from Python
+    checkbox: check_ptr
+    label: label_ptr
+
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: ROW_HEIGHT
+    padding: [PADDING_X, 0, PADDING_X, 0]
+    spacing: 15
+
+    # Visual feedback for the click
+    canvas.before:
+        Color:
+            rgba: self.color if self.state == 'normal' else self.hover_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    # 1. Checkbox on the left
+    CheckBox:
+        id: check_ptr
+        active: root.dto.is_completed
+        size_hint: (None, 1)
+        width: 40
+        # Centers the checkbox vertically within the row
+        pos_hint: {'center_y': 0.5}
+        on_press: root.on_checkbox_activate()
+
+    # 2. Description in the middle
+    Label:
+        id: label_ptr
+        text: root.display_label
+        color: TEXT_COLOR
+        text_size: self.size
+        halign: 'left'
+        valign: 'middle'
+        shorten: True
+        shorten_from: 'right'
+        # Ensures the label takes up the remaining horizontal space
+        size_hint_x: 1
+
+    # 3. Optional: Right-side indicator or spacer
+    Widget:
+        size_hint_x: None
+        width: 10

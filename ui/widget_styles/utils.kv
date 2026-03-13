@@ -1,0 +1,28 @@
+#:set POPUP_COLOR_BG  [0.15, 0.15, 0.17, 1]
+#:set POPUP_COLOR_BORDER (0.161, 0.89, 0.302, 0.86)
+#:set POPUP_BORDER_WIDTH dp(1)
+
+# --- 1. BASE MODERN POPUP ---
+<ModernPopup>:
+    # Hide Kivy's default ugly popup title and line
+    title: ""
+    separator_height: 0
+    background: ''
+    background_color: COLOR_TRANSP
+    size_hint: (0.85, 0.85)
+
+    # Draw our own modern rounded rectangle background
+    canvas.before:
+        Color:
+            rgba: POPUP_COLOR_BG
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: ROUNDING_RADIUS
+
+    canvas.after:
+        Color:
+            rgba: POPUP_COLOR_BORDER
+        Line:
+            width: POPUP_BORDER_WIDTH
+            rounded_rectangle: (self.x, self.y, self.width, self.height, ROUNDING_RADIUS[0])

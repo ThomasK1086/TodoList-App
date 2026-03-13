@@ -1,0 +1,128 @@
+#:set COLOR_COMPLETE    (0.28, 0.7, 0.45, 1)
+#:set COLOR_COMPLETE_P  (0.2, 0.5, 0.35, 1)
+
+#:set COLOR_DELETE  (0.8, 0.35, 0.35, 1)
+#:set COLOR_DELETE_P (0.6, 0.25, 0.25, 1)
+
+#:set COLOR_EDIT (0.25, 0.5, 0.8, 1)
+#:set COLOR_EDIT_P (0.15, 0.35, 0.6, 1)
+
+#:set COLOR_CLOSE (0.3, 0.3, 0.35, 1)
+#:set COLOR_CLOSE_P (0.2, 0.2, 0.25, 1)
+
+#:set BUTTON_HEIGHT 50
+#:set BUTTON_ROUNDING_RADIUS [10,]
+
+
+<TaskDetailButton>
+    size_hint_y: None
+    height: BUTTON_HEIGHT
+    background_normal: ''
+    background_color: COLOR_TRANSP
+    bold: True
+
+
+# --- 1. Grid Layout for Popup actions---
+<TaskDetailButtonsPanel>
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_y: None
+        height: 120
+        spacing: 10
+
+        # Large Green Button (Full Width)
+        TaskDetailButton:
+            text: "COMPLETE TASK"
+            canvas.before:
+                Color:
+                    rgba: COLOR_COMPLETE if self.state == 'normal' else COLOR_COMPLETE_P
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: BUTTON_ROUNDING_RADIUS
+            on_release: root.dispatch('on_complete')
+
+        # Three Equal Buttons in one line
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+            size_hint_y: None
+            height: BUTTON_HEIGHT
+
+            # Red Button
+            TaskDetailButton:
+                text: "DELETE"
+                canvas.before:
+                    Color:
+                        rgba: COLOR_DELETE if self.state == 'normal' else COLOR_DELETE_P
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: BUTTON_ROUNDING_RADIUS
+                on_release: root.dispatch('on_delete')
+
+            # Blue Button
+            TaskDetailButton:
+                text: "EDIT"
+                canvas.before:
+                    Color:
+                        rgba: COLOR_EDIT if self.state == 'normal' else COLOR_EDIT_P
+
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: BUTTON_ROUNDING_RADIUS
+                on_release: root.dispatch('on_update')
+
+             # Grey Button
+            TaskDetailButton:
+                text: "CLOSE"
+                canvas.before:
+                    Color:
+                        rgba: COLOR_CLOSE  if self.state == 'normal' else COLOR_CLOSE_P
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: BUTTON_ROUNDING_RADIUS
+                on_release: root.dispatch('on_close')
+
+
+# --- 2. SHARED TASK POPUP SHELL ---
+<TaskPopup>:
+    # LINKING: This connects the ID below to the Python ObjectProperty
+    content_area: _content_area
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: MAIN_PADDING
+        spacing: MAIN_SPACING
+
+        # TOP: Custom Title Area
+        Label:
+            text: root.task_title
+            font_size: FONT_TITLE_SIZE
+            color: FONT_COLOR_MAIN
+            bold: True
+            size_hint_y: None
+            height: self.texture_size[1] + dp(10)
+            halign: 'left'
+            valign: 'middle'
+            # Bind text size to width so long titles wrap nicely
+            text_size: self.width, None
+
+        # MIDDLE: Dynamic Content Container
+        BoxLayout:
+            id: _content_area
+            orientation: 'vertical'
+            size_hint_y: 1
+
+        # BOTTOM: Buttons Panel
+        TaskDetailButtonsPanel:
+            size_hint_y: None
+            height: dp(50)
+            # BUTTON LOGIC WIRING TO TaskPopup METHODS
+            on_complete: root.on_press_complete()
+            on_delete: root.on_press_delete()
+            on_update: root.on_press_update()
+            on_close: root.on_press_close()
+

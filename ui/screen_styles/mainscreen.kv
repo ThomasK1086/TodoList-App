@@ -1,0 +1,65 @@
+<MainScreen>:
+    group_scroll_view: _content_area
+
+    orientation: 'vertical'
+    padding: 20
+    spacing: 20
+    background_normal: ''
+    background_color: COLOR_INFO
+
+    Label:
+        size_hint_y: 0.15
+        text: root.ui_display_name
+        font_size: '32sp'
+
+    # MIDDLE: Dynamic Content Container
+    ScrollView:
+        size_hint_y: 0.75
+        do_scroll_x: False
+        do_scroll_y: True
+        scroll_type: ['bars', 'content']
+        bar_width: dp(5)
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+
+        canvas.before:
+            Color:
+                rgba: COLOR_DANGER
+
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: ROUNDING_RADIUS
+        canvas.after:
+            Color:
+                rgba: SCROLLVIEW_COLOR_BORDER
+            Line:
+                width: SCROLLVIEW_WITDH_BORDER
+                rounded_rectangle: (self.x, self.y, self.width, self.height, ROUNDING_RADIUS[0])
+
+        BoxLayout:
+            id: _content_area
+            orientation: 'vertical'
+
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: MAIN_SPACING
+            padding: MAIN_PADDING
+
+            canvas.before:
+                Color:
+                    rgba: COLOR_BG_DARKGREY
+
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: BUTTON_ROUNDING_RADIUS
+
+            # Group Boxes are later inserted here
+
+    Button:
+        text: "Fetch Data"
+        size_hint_y: 0.1
+        on_press: root.on_button_click()
+        background_normal: ''
+        background_color: COLOR_ACCENT
